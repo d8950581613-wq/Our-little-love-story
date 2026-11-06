@@ -41,7 +41,92 @@
 }
   .heart svg { width:100%; height:100%; overflow:visible; }
   .heart-outline { fill: #381a26; stroke: #d99bad; stroke-width: 3; }
-  .heart-fill { fill: #e83b73; clip-path: inset(100% 0 0 0); transition: clip-path .25s ease; }
+  .heart-fill {
+  fill: #e83b73;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path .4s ease;
+  filter: drop-shadow(0 0 8px #ff4f91);
+  }
+ /* Liquid wave effect */
+.heart-fill {
+  filter: drop-shadow(0 0 8px #ff4f91);
+}
+
+.heart-fill {
+  transform-origin: center;
+  animation: liquidGlow 2s ease-in-out infinite;
+}
+
+@keyframes liquidGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px #ff4f91);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px #ff8fbd);
+  }
+}
+/* Pink liquid wave */
+.heart-fill {
+  filter: drop-shadow(0 0 8px #ff4f91);
+}
+
+.liquid-wave {
+  animation: waveFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes waveFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Floating bubbles */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff0f7, #ff75aa 60%, #ff3d85);
+  box-shadow: 0 0 8px #ff8fbd;
+  animation: bubbleRise 3s ease-in infinite;
+  pointer-events: none;
+}
+
+@keyframes bubbleRise {
+  0% {
+    transform: translateY(15px) scale(.7);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-45px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Sparkles */
+.sparkle {
+  position: absolute;
+  color: #fff1f7;
+  font-size: 14px;
+  animation: sparkleGlow 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkleGlow {
+  0%, 100% {
+    opacity: .3;
+    transform: scale(.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+ 
   .photo {
     position: absolute; width: 76px; height: 76px; border-radius: 50%;
     border: 3px solid #e9b9c8; background: #2c1721; overflow:hidden;
@@ -137,6 +222,34 @@
   // Floating hearts
   const hearts = document.getElementById('hearts');
 
+  // Add floating bubbles and sparkles
+  const heartWrap = document.querySelector('.heart-wrap');
+
+  for (let i = 0; i < 8; i++) {
+    const bubble = document.createElement('span');
+    bubble.className = 'bubble';
+
+    bubble.style.width = (6 + Math.random() * 10) + 'px';
+    bubble.style.height = bubble.style.width;
+    bubble.style.left = (20 + Math.random() * 60) + '%';
+    bubble.style.bottom = (10 + Math.random() * 50) + '%';
+    bubble.style.animationDelay = (Math.random() * 3) + 's';
+
+    heartWrap.appendChild(bubble);
+  }
+
+  for (let i = 0; i < 5; i++) {
+    const sparkle = document.createElement('span');
+    sparkle.className = 'sparkle';
+    sparkle.textContent = '✦';
+
+    sparkle.style.left = (20 + Math.random() * 60) + '%';
+    sparkle.style.top = (15 + Math.random() * 60) + '%';
+    sparkle.style.animationDelay = (Math.random() * 2) + 's';
+
+    heartWrap.appendChild(sparkle);
+  }
+ 
   for (let i = 0; i < 15; i++) {
     const h = document.createElement('span');
     h.className = 'floating';

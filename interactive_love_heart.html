@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A little piece of my heart</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: #f7dfe8;
+    font-family: "Georgia", "Times New Roman", serif;
+    background: radial-gradient(ellipse at center, #210d18 0%, #0c0710 72%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 14px;
+  }
+  .page { width: min(100%, 520px); text-align: center; }
+  .rings { width: min(82vw, 390px); aspect-ratio: 1; margin: 0 auto 12px; position: relative; }
+  .ring { position:absolute; inset: 2%; border: 2px solid #77515f; border-radius: 50%; }
+  .ring:nth-child(2) { inset: 8%; border-color: #563845; }
+  .heart-wrap { position:absolute; inset: 19% 17% 12%; display:grid; place-items:center; }
+  .heart {
+    width: 100%; height: 100%; position: relative; cursor: pointer; border: 0;
+    background: transparent; padding: 0; filter: drop-shadow(0 8px 14px #8a304c55);
+    transform: scale(1); transition: transform .15s ease;
+  }
+  .heart:active { transform: scale(.96); }
+  .heart svg { width:100%; height:100%; overflow:visible; }
+  .heart-outline { fill: #381a26; stroke: #d99bad; stroke-width: 3; }
+  .heart-fill { fill: #e83b73; clip-path: inset(100% 0 0 0); transition: clip-path .25s ease; }
+  .photo {
+    position: absolute; width: 76px; height: 76px; border-radius: 50%;
+    border: 3px solid #e9b9c8; background: #2c1721; overflow:hidden;
+    left:50%; bottom: 0; transform: translate(-50%, 25%);
+    display:grid; place-items:center; cursor:pointer; z-index: 2;
+    box-shadow: 0 0 0 5px #4c2736;
+  }
+  .photo img { width:100%; height:100%; object-fit:cover; display:none; }
+  .photo .placeholder { font: 11px Arial,sans-serif; padding: 4px; color:#e6b8c8; }
+  .hearts { position:absolute; inset: 8% 10%; pointer-events:none; }
+  .floating { position:absolute; color:#d9a8b8; font-size:18px; animation: float 3.5s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0);opacity:.65} 50%{transform:translateY(-13px);opacity:1} }
+  h1 { font: 500 36px Arial,sans-serif; margin: 22px 0 10px; color:#ffe5ed; }
+  .sub { font: 18px Arial,sans-serif; color:#c9a7b5; margin: 0 0 18px; }
+  .small { font: 15px Arial,sans-serif; color:#a98b99; margin: 16px 0; }
+  .progress { height: 15px; width: min(90%, 390px); margin: 22px auto 0; background:#410d22; border:1px solid #7c2446; border-radius:99px; overflow:hidden; }
+  .bar { width:0%; height:100%; border-radius:99px; background:linear-gradient(90deg,#ef2464,#ff7ab0); transition:width .2s; }
+  .letter { display:none; margin:26px auto 0; padding:22px; border:1px solid #754456; border-radius:18px; background:#1b0c15; line-height:1.7; font-size:18px; white-space:pre-wrap; }
+  .letter.show { display:block; animation: pop .5s ease; }
+  @keyframes pop { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .controls { margin:22px 0 0; font:14px Arial,sans-serif; color:#bda0ad; }
+  input[type=file] { max-width:100%; margin-top:10px; color:#d8bdc8; }
+  .reset { background:none; border:1px solid #76505f; color:#dcb9c7; border-radius:20px; padding:8px 15px; margin-top:12px; cursor:pointer; }
+  .hint { font:12px Arial,sans-serif; color:#816674; margin-top:20px; }
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="rings">
+    <div class="ring"></div><div class="ring"></div>
+    <div class="hearts" id="hearts"></div>
+    <div class="heart-wrap">
+      <button class="heart" id="heartBtn" aria-label="Tap to fill the heart">
+        <svg viewBox="0 0 300 270" role="img">
+          <path class="heart-outline" d="M150 250 C125 225 20 155 20 85 C20 20 105 5 150 70 C195 5 280 20 280 85 C280 155 175 225 150 250 Z"/>
+          <path class="heart-fill" id="heartFill" d="M150 250 C125 225 20 155 20 85 C20 20 105 5 150 70 C195 5 280 20 280 85 C280 155 175 225 150 250 Z"/>
+        </svg>
+      </button>
+    </div>
+    <button class="photo" id="photoBtn" title="Tap to view your photo">
+      <span class="placeholder" id="photoPlaceholder">YOUR<br>PHOTO</span>
+      <img id="photoImg" alt="Our photo">
+    </button>
+  </div>
+
+  <h1 id="heading">Press me</h1>
+  <p class="sub" id="instruction">Keep tapping — the heart fills up.</p>
+  <p class="small" id="photoCaption">1 photo inside. Tap to see</p>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <section class="letter" id="letter">
+    <strong>To my favorite person,</strong><br><br>
+    If I could give you one thing, it would be the ability to see yourself through my eyes.
+    Then you would know how special you are to me.<br><br>
+    No matter how far apart we are, a little piece of my heart will always be with you.<br><br>
+    <strong>Always yours ♥</strong>
+  </section>
+
+  <div class="controls">
+    <div>Want to add your photo? Choose it below (preview on your device):</div>
+    <input type="file" id="photoUpload" accept="image/*">
+    <br><button class="reset" id="resetBtn">Start again</button>
+  </div>
+  <p class="hint">Tap the heart 10 times to reveal the letter.</p>
+</main>
+
+<script>
+  const heartBtn = document.getElementById('heartBtn');
+  const heartFill = document.getElementById('heartFill');
+  const bar = document.getElementById('bar');
+  const heading = document.getElementById('heading');
+  const instruction = document.getElementById('instruction');
+  const letter = document.getElementById('letter');
+  const photoBtn = document.getElementById('photoBtn');
+  const photoImg = document.getElementById('photoImg');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+  const upload = document.getElementById('photoUpload');
+  let taps = 0;
+  const total = 10;
+
+  // Decorative floating hearts
+  const hearts = document.getElementById('hearts');
+  for (let i = 0; i < 15; i++) {
+    const h = document.createElement('span');
+    h.className = 'floating';
+    h.textContent = '♥';
+    h.style.left = (8 + Math.random() * 84) + '%';
+    h.style.top = (5 + Math.random() * 78) + '%';
+    h.style.animationDelay = (Math.random() * 3) + 's';
+    h.style.fontSize = (10 + Math.random() * 12) + 'px';
+    hearts.appendChild(h);
+  }
+
+  heartBtn.addEventListener('click', () => {
+    taps = Math.min(taps + 1, total);
+    const percent = taps / total * 100;
+    heartFill.style.clipPath = `inset(${100 - percent}% 0 0 0)`;
+    bar.style.width = percent + '%';
+    if (taps < total) {
+      heading.textContent = `${total - taps} more ${total - taps === 1 ? 'tap' : 'taps'}…`;
+      instruction.textContent = 'A little more love, one tap at a time.';
+    } else {
+      heading.textContent = 'For you, with love ♥';
+      instruction.textContent = 'You found the little secret inside my heart.';
+      letter.classList.add('show');
+      letter.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+  });
+
+  photoBtn.addEventListener('click', () => {
+    if (photoImg.src && photoImg.style.display === 'block') {
+      window.open(photoImg.src, '_blank');
+    } else {
+      upload.click();
+    }
+  });
+
+  upload.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    photoImg.src = URL.createObjectURL(file);
+    photoImg.style.display = 'block';
+    photoPlaceholder.style.display = 'none';
+    document.getElementById('photoCaption').textContent = 'Your photo is ready. Tap the circle to view.';
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    taps = 0;
+    heartFill.style.clipPath = 'inset(100% 0 0 0)';
+    bar.style.width = '0%';
+    letter.classList.remove('show');
+    heading.textContent = 'Press me';
+    instruction.textContent = 'Keep tapping — the heart fills up.';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+</body>
+</html>

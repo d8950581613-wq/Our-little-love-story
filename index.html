@@ -110,6 +110,14 @@
 </main>
 
 <script>
+ 
+
+  // Song
+  const loveSong = new Audio(
+    'https://raw.githubusercontent.com/d8950581613-wq/Our-little-love-story/main/Vaaroon%20Forever%20(From%20Mirzapur%20The%20Movie).mp3'
+  );
+  loveSong.volume = 0.7;
+
   const heartBtn = document.getElementById('heartBtn');
   const heartFill = document.getElementById('heartFill');
   const bar = document.getElementById('bar');
@@ -120,11 +128,15 @@
   const photoImg = document.getElementById('photoImg');
   const photoPlaceholder = document.getElementById('photoPlaceholder');
   const upload = document.getElementById('photoUpload');
+  const musicBtn = document.getElementById('musicBtn');
+
   let taps = 0;
   const total = 10;
+  let songStarted = false;
 
-  // Decorative floating hearts
+  // Floating hearts
   const hearts = document.getElementById('hearts');
+
   for (let i = 0; i < 15; i++) {
     const h = document.createElement('span');
     h.className = 'floating';
@@ -136,25 +148,72 @@
     hearts.appendChild(h);
   }
 
+  // Heart click
   heartBtn.addEventListener('click', () => {
-   heartBtn.classList.remove('bounce');
-void heartBtn.offsetWidth;
-heartBtn.classList.add('bounce');
+    heartBtn.classList.remove('bounce');
+    void heartBtn.offsetWidth;
+    heartBtn.classList.add('bounce');
+
     taps = Math.min(taps + 1, total);
+
     const percent = taps / total * 100;
-    heartFill.style.clipPath = `inset(${100 - percent}% 0 0 0)`;
+
+    heartFill.style.clipPath =
+      `inset(${100 - percent}% 0 0 0)`;
+
     bar.style.width = percent + '%';
+
     if (taps < total) {
-      heading.textContent = `${total - taps} more ${total - taps === 1 ? 'tap' : 'taps'}…`;
-      instruction.textContent = 'A little more love, one tap at a time.';
+      heading.textContent =
+        `${total - taps} more ${total - taps === 1 ? 'tap' : 'taps'}…`;
+
+      instruction.textContent =
+        'A little more love, one tap at a time.';
     } else {
       heading.textContent = 'For you, with love ♥';
-      instruction.textContent = 'You found the little secret inside my heart.';
+      instruction.textContent =
+        'You found the little secret inside my heart.';
+
       letter.classList.add('show');
-      letter.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+      letter.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+
+      // Automatically play song when heart fills
+      if (!songStarted) {
+        songStarted = true;
+
+        loveSong.play()
+          .then(() => {
+            musicBtn.textContent = '⏸️';
+          })
+          .catch(error => {
+            songStarted = false;
+            console.log('Song playback failed:', error);
+          });
+      }
     }
   });
 
+  // Music button: play/pause
+  musicBtn.addEventListener('click', () => {
+    if (loveSong.paused) {
+      loveSong.play()
+        .then(() => {
+          musicBtn.textContent = '⏸️';
+        })
+        .catch(error => {
+          console.log('Song playback failed:', error);
+        });
+    } else {
+      loveSong.pause();
+      musicBtn.textContent = '🎵';
+    }
+  });
+
+  // Photo button
   photoBtn.addEventListener('click', () => {
     if (photoImg.src && photoImg.style.display === 'block') {
       window.open(photoImg.src, '_blank');
@@ -163,45 +222,47 @@ heartBtn.classList.add('bounce');
     }
   });
 
+  // Photo upload
   upload.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
+
     if (!file) return;
+
     photoImg.src = URL.createObjectURL(file);
     photoImg.style.display = 'block';
     photoPlaceholder.style.display = 'none';
-    document.getElementById('photoCaption').textContent = 'Your photo is ready. Tap the circle to view.';
+
+    document.getElementById('photoCaption').textContent =
+      'Your photo is ready. Tap the circle to view.';
   });
 
+  // Reset
   document.getElementById('resetBtn').addEventListener('click', () => {
     taps = 0;
+    songStarted = false;
+
+    loveSong.pause();
+    loveSong.currentTime = 0;
+    musicBtn.textContent = '🎵';
+
     heartFill.style.clipPath = 'inset(100% 0 0 0)';
     bar.style.width = '0%';
+
     letter.classList.remove('show');
+
     heading.textContent = 'Press me';
-    instruction.textContent = 'Keep tapping — the heart fills up.';
-    window.scrollTo({top:0, behavior:'smooth'});
-  });// Play song when heart is completely filled
-const loveSong = new Audio('https://raw.githubusercontent.com/d8950581613-wq/Our-little-love-story/main/Vaaroon%20Forever%20(From%20Mirzapur%20The%20Movie).mp3');
-loveSong.volume = 0.7;
- const musicBtn = document.getElementById('musicBtn');
+    instruction.textContent =
+      'Keep tapping — the heart fills up.';
 
-musicBtn.addEventListener('click', () => {
-    if (loveSong.paused) {
-        loveSong.play();
-        musicBtn.textContent = '⏸️';
-    } else {
-        loveSong.pause();
-        musicBtn.textContent = '🎵';
-    }
-});
-
-heartBtn.addEventListener('click', () => {
-  if (taps === total) {
-    loveSong.play().catch(error => {
-      console.log('Song playback failed:', error);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
     });
-  }
-});
+  });
 </script>
+ 
+  
+
+
 </body>
 </html>

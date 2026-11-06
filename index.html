@@ -24,6 +24,21 @@
     transform: scale(1); transition: transform .15s ease;
   }
   .heart:active { transform: scale(.96); }
+ .heart.bounce {
+  animation: heartbeat .35s ease;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.15);
+  }
+  60% {
+    transform: scale(.95);
+  }
+}
   .heart svg { width:100%; height:100%; overflow:visible; }
   .heart-outline { fill: #381a26; stroke: #d99bad; stroke-width: 3; }
   .heart-fill { fill: #e83b73; clip-path: inset(100% 0 0 0); transition: clip-path .25s ease; }

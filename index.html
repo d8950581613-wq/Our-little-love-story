@@ -136,6 +136,9 @@
   }
 
   heartBtn.addEventListener('click', () => {
+   heartBtn.classList.remove('bounce');
+void heartBtn.offsetWidth;
+heartBtn.classList.add('bounce');
     taps = Math.min(taps + 1, total);
     const percent = taps / total * 100;
     heartFill.style.clipPath = `inset(${100 - percent}% 0 0 0)`;

@@ -85,6 +85,7 @@
       <span class="placeholder" id="photoPlaceholder">YOUR<br>PHOTO</span>
       <img id="photoImg" alt="Our photo">
     </button>
+   <button id="musicBtn" class="music-btn">🎵</button>
   </div>
 
   <h1 id="heading">Press me</h1>
@@ -182,6 +183,17 @@ heartBtn.classList.add('bounce');
   });// Play song when heart is completely filled
 const loveSong = new Audio('./song.mp3');
 loveSong.volume = 0.7;
+ const musicBtn = document.getElementById('musicBtn');
+
+musicBtn.addEventListener('click', () => {
+    if (loveSong.paused) {
+        loveSong.play();
+        musicBtn.textContent = '⏸️';
+    } else {
+        loveSong.pause();
+        musicBtn.textContent = '🎵';
+    }
+});
 
 heartBtn.addEventListener('click', () => {
   if (taps === total) {
